@@ -1,0 +1,583 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALTIZEN REDEEM ROBUX</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #000;
+  color: white;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* MAIN POPUP */
+.main-popup {
+  width: 100%;
+  max-width: 620px;
+  background: #101010;
+  border: 1px solid #303030;
+  border-radius: 32px;
+  padding: 48px 38px;
+  text-align: center;
+  box-shadow: 0 12px 35px rgba(0,0,0,.5);
+}
+
+/* TITLE BOX */
+.title-box {
+  width: 100%;
+  background: #191919;
+  border: 1px solid #383838;
+  border-radius: 22px;
+  padding: 26px 12px;
+  margin-bottom: 42px;
+}
+
+.title-box h1 {
+  margin: 0;
+  font-size: clamp(25px, 5vw, 42px);
+  font-weight: bold;
+}
+
+.subtitle {
+  color: #999;
+  font-size: clamp(15px, 3.5vw, 25px);
+  margin: 0 0 36px;
+}
+
+input {
+  width: 100%;
+  height: 88px;
+  background: #080808;
+  border: 1px solid #393939;
+  border-radius: 16px;
+  color: white;
+  font-size: clamp(16px, 3.5vw, 27px);
+  text-align: center;
+  outline: none;
+  padding: 12px;
+  margin-bottom: 25px;
+}
+
+input:focus {
+  border-color: #777;
+}
+
+input::placeholder {
+  color: #777;
+}
+
+button {
+  width: 100%;
+  height: 80px;
+  background: white;
+  color: black;
+  border: none;
+  border-radius: 16px;
+  font-size: clamp(17px, 3.5vw, 25px);
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: .5;
+}
+
+.footer {
+  color: #777;
+  font-size: 22px;
+  margin-top: 50px;
+}
+
+/* PAGES */
+#verifyPage,
+#redeemPage {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+#verifyPage .main-popup,
+#redeemPage .main-popup {
+  width: 100%;
+}
+
+/* PROGRESS */
+#progressContainer {
+  display: none;
+  width: 100%;
+  height: 8px;
+  background: #333;
+  border-radius: 20px;
+  margin-top: 22px;
+  overflow: hidden;
+}
+
+#progressBar {
+  width: 0%;
+  height: 100%;
+  background: white;
+  transition: width .1s linear;
+}
+
+#verifyStatus,
+#redeemStatus {
+  margin-top: 18px;
+  font-size: 16px;
+}
+
+/* NAME LABEL */
+#nameLabel {
+  display: none;
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  padding: 10px 14px;
+  background: #101010;
+  border: 1px solid #444;
+  border-radius: 8px;
+  font-size: 13px;
+  z-index: 10;
+}
+
+/* NOTIFICATION - BOTTOM CENTER */
+#notification {
+  display: none;
+  position: fixed;
+  top: auto;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 340px;
+  max-width: calc(100% - 30px);
+  padding: 22px;
+  background: #101010;
+  border: 1px solid #555;
+  border-radius: 17px;
+  z-index: 1000;
+  text-align: left;
+  box-shadow: 0 8px 30px rgba(0,0,0,.8);
+}
+
+#notification h3 {
+  font-size: 18px;
+  margin: 0 35px 16px 0;
+}
+
+#notification p {
+  color: #ccc;
+  font-size: 15px;
+  overflow-wrap: anywhere;
+  margin: 10px 0;
+}
+
+#closeNotification {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  background: #222;
+  color: white;
+  border: 1px solid #555;
+  border-radius: 6px;
+  font-size: 17px;
+}
+
+/* SUCCESS POPUP */
+#successOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0,0,0,.88);
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.success-box {
+  width: 100%;
+  max-width: 380px;
+  padding: 35px 25px;
+  text-align: center;
+  background: #101010;
+  border: 1px solid #555;
+  border-radius: 20px;
+}
+
+.success-box h2 {
+  font-size: 27px;
+  margin: 0 0 20px;
+}
+
+.success-box p {
+  color: #ccc;
+  font-size: 17px;
+  line-height: 1.7;
+  margin-bottom: 25px;
+}
+
+/* MOBILE */
+@media(max-width: 480px) {
+  .main-popup {
+    padding: 30px 22px;
+    border-radius: 24px;
+  }
+
+  .title-box {
+    padding: 22px 10px;
+    margin-bottom: 30px;
+    border-radius: 17px;
+  }
+
+  .subtitle {
+    margin-bottom: 25px;
+  }
+
+  input {
+    height: 65px;
+    margin-bottom: 18px;
+    border-radius: 12px;
+  }
+
+  button {
+    height: 62px;
+    border-radius: 12px;
+  }
+
+  .footer {
+    margin-top: 35px;
+    font-size: 18px;
+  }
+
+  #notification {
+    bottom: 20px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- VERIFY PAGE -->
+<div id="verifyPage">
+  <div class="main-popup">
+
+    <div class="title-box">
+      <h1>Verify Your Name</h1>
+    </div>
+
+    <p class="subtitle">Enter your name to continue</p>
+
+    <input
+      id="nameInput"
+      type="text"
+      placeholder="Enter Your Name"
+      autocomplete="off"
+    >
+
+    <button id="verifyButton" onclick="verifyName()">
+      VERIFY
+    </button>
+
+    <div id="progressContainer">
+      <div id="progressBar"></div>
+    </div>
+
+    <div id="verifyStatus"></div>
+
+    <div class="footer">By. Altizen</div>
+  </div>
+</div>
+
+<!-- NAME LABEL -->
+<div id="nameLabel"></div>
+
+<!-- REDEEM PAGE -->
+<div id="redeemPage" style="display:none;">
+
+  <div class="main-popup">
+
+    <div class="title-box">
+      <h1>ALTIZEN REDEEM ROBUX</h1>
+    </div>
+
+    <p class="subtitle">Enter your code to continue</p>
+
+    <input
+      id="codeInput"
+      type="text"
+      placeholder="Enter Your Code"
+      autocomplete="off"
+    >
+
+    <button id="redeemButton" onclick="redeemCode()">
+      REDEEM
+    </button>
+
+    <div id="redeemStatus"></div>
+
+    <div class="footer">By. Altizen</div>
+  </div>
+</div>
+
+<!-- NOTIFICATION -->
+<div id="notification">
+  <button id="closeNotification" onclick="closeNotification()">X</button>
+
+  <h3>Redeem your code!</h3>
+
+  <p>For: <span id="notificationName"></span></p>
+  <p>Code: <span id="notificationCode"></span></p>
+</div>
+
+<!-- SUCCESS POPUP -->
+<div id="successOverlay">
+  <div class="success-box">
+    <h2>Successfully</h2>
+
+    <p>
+      Congratulations!<br>
+      You get <span id="successAmount">. . .</span> Robux
+    </p>
+
+    <button onclick="closeSuccess()">OK</button>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
+
+import { getDatabase, ref, onValue }
+from "https://www.gstatic.com/firebasejs/13.4.0/firebase-database.js";
+
+/* FIREBASE CONFIG */
+const firebaseConfig = {
+  apiKey: "AIzaSyBveJkOrObLLYNHT0yClR4RIiFgosaIF3M",
+  authDomain: "altizen-robux.firebaseapp.com",
+  databaseURL: "https://altizen-robux-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "altizen-robux",
+  storageBucket: "altizen-robux.firebasestorage.app",
+  messagingSenderId: "632607528636",
+  appId: "1:632607528636:web:c296ebef87dcd7c3a6a2b9",
+  measurementId: "G-S0WR6SM6G4"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+let verifiedName = "";
+let currentData = null;
+let notificationClosed = false;
+let lastNotificationId = null;
+
+/* CODE STORAGE */
+function normalizeCode(code) {
+  return String(code || "").trim().toUpperCase();
+}
+
+function getUsedCodes() {
+  try {
+    return JSON.parse(
+      localStorage.getItem("altizenUsedCodes") || "[]"
+    );
+  } catch {
+    return [];
+  }
+}
+
+function isCodeUsed(code) {
+  return getUsedCodes().includes(normalizeCode(code));
+}
+
+function markCodeUsed(code) {
+  const used = getUsedCodes();
+  const normalized = normalizeCode(code);
+
+  if (!used.includes(normalized)) {
+    used.push(normalized);
+    localStorage.setItem(
+      "altizenUsedCodes",
+      JSON.stringify(used)
+    );
+  }
+}
+
+/* VERIFY NAME */
+window.verifyName = function() {
+  const name = document.getElementById("nameInput").value.trim();
+
+  const button = document.getElementById("verifyButton");
+  const status = document.getElementById("verifyStatus");
+  const progressContainer = document.getElementById("progressContainer");
+  const progressBar = document.getElementById("progressBar");
+
+  if (!name) {
+    status.style.color = "#ff5555";
+    status.textContent = "Please enter your name!";
+    return;
+  }
+
+  button.style.display = "none";
+  document.getElementById("nameInput").disabled = true;
+
+  progressContainer.style.display = "block";
+  status.style.color = "#ccc";
+  status.textContent = "Processing...";
+
+  let progress = 0;
+
+  const interval = setInterval(() => {
+    progress += 2;
+    progressBar.style.width = progress + "%";
+
+    if (progress >= 100) {
+      clearInterval(interval);
+
+      verifiedName = name;
+
+      status.style.color = "#45df79";
+      status.textContent = "✓ Success!";
+
+      setTimeout(() => {
+        document.getElementById("verifyPage").style.display = "none";
+        document.getElementById("redeemPage").style.display = "flex";
+
+        const label = document.getElementById("nameLabel");
+        label.textContent = "Name: " + verifiedName;
+        label.style.display = "block";
+
+        checkNotification();
+      }, 700);
+    }
+  }, 30);
+};
+
+/* FIREBASE LISTENER */
+const notificationRef = ref(db, "notifications/current");
+
+onValue(notificationRef, (snapshot) => {
+  currentData = snapshot.val();
+
+  if (!currentData) {
+    document.getElementById("notification").style.display = "none";
+    return;
+  }
+
+  const id = currentData.createdAt || currentData.code || "";
+
+  if (id !== lastNotificationId) {
+    lastNotificationId = id;
+    notificationClosed = false;
+  }
+
+  checkNotification();
+
+}, (error) => {
+  console.error("Firebase error:", error);
+});
+
+/* CHECK NOTIFICATION */
+function checkNotification() {
+  const popup = document.getElementById("notification");
+
+  if (!verifiedName || !currentData || notificationClosed) {
+    return;
+  }
+
+  const targetName = String(currentData.name || "").trim();
+
+  if (targetName.toLowerCase() === verifiedName.toLowerCase()) {
+    document.getElementById("notificationName").textContent =
+      currentData.name || "";
+
+    document.getElementById("notificationCode").textContent =
+      currentData.code || "";
+
+    popup.style.display = "block";
+  } else {
+    popup.style.display = "none";
+  }
+}
+
+/* CLOSE NOTIFICATION */
+window.closeNotification = function() {
+  document.getElementById("notification").style.display = "none";
+  notificationClosed = true;
+};
+
+/* REDEEM CODE */
+window.redeemCode = function() {
+  const input = document.getElementById("codeInput");
+  const status = document.getElementById("redeemStatus");
+
+  const enteredCode = normalizeCode(input.value);
+
+  status.style.color = "#ff5555";
+
+  if (!enteredCode) {
+    status.textContent = "Please enter a code!";
+    return;
+  }
+
+  if (isCodeUsed(enteredCode)) {
+    status.textContent = "This code has already been used!";
+    return;
+  }
+
+  if (!currentData) {
+    status.textContent = "Invalid code!";
+    return;
+  }
+
+  const correctCode = normalizeCode(currentData.code);
+  const targetName = String(currentData.name || "").trim();
+
+  if (enteredCode !== correctCode) {
+    status.textContent = "Invalid code!";
+    return;
+  }
+
+  if (targetName.toLowerCase() !== verifiedName.toLowerCase()) {
+    status.textContent = "This code is not for your name!";
+    return;
+  }
+
+  markCodeUsed(enteredCode);
+
+  document.getElementById("successAmount").textContent =
+    currentData.amount != null && currentData.amount !== ""
+      ? currentData.amount
+      : ". . .";
+
+  document.getElementById("successOverlay").style.display = "flex";
+  document.getElementById("notification").style.display = "none";
+
+  status.textContent = "";
+};
+
+/* CLOSE SUCCESS */
+window.closeSuccess = function() {
+  document.getElementById("successOverlay").style.display = "none";
+  document.getElementById("codeInput").value = "";
+  document.getElementById("redeemStatus").textContent = "";
+};
+</script>
+
+</body>
+</html>
